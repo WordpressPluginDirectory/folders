@@ -9,6 +9,7 @@
 if (defined('ABSPATH') === false) {
     exit;
 }
+$email = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == "playground.wordpress.net")?"":get_option('admin_email');
 ?>
 <style>
     body {
@@ -18,7 +19,7 @@ if (defined('ABSPATH') === false) {
 <div class="starts-testimonials-updates-form">
     <div class="updates-form-form-left">
         <div class="updates-form-form-left-text">premio</div>
-        <img src="<?php echo WCP_FOLDER_URL ?>assets/images/wcupdate_email.svg" style="width: 230px;margin: 60px 0px 20px 0px;" />
+        <img src="<?php echo esc_url(WCP_FOLDER_URL."assets/images/wcupdate_email.svg") ?>" style="width: 230px;margin: 60px 0px 20px 0px;" />
         <p><?php esc_html_e('Grow your WordPress or Shopify websites with our plugins', 'stars-testimonials'); ?></p>
     </div>
     <div class="updates-form-form-right">
@@ -36,7 +37,7 @@ if (defined('ABSPATH') === false) {
                         </g>
                     </svg>
                 </div>
-                <input id="folder_update_status" autocomplete="off" value="<?php echo get_option('admin_email') ?>" placeholder="Email address">
+                <input id="folder_update_status" autocomplete="off" value="<?php echo esc_attr($email) ?>" placeholder="Email address">
                 <button href="javascript:;" class="button button-primary form-submit-btn yes befirst-btn"><?php esc_html_e('Sign Up', 'stars-testimonials'); ?></button>
             </div>
             <!--div class="update-form-skip-button">
@@ -56,11 +57,11 @@ if (defined('ABSPATH') === false) {
 
     @font-face {
         font-family: 'Lato';
-        src: url('<?php echo WCP_FOLDER_URL."assets/fonts/Lato-Regular.woff";?>');
+        src: url('<?php echo esc_url(WCP_FOLDER_URL."assets/fonts/Lato-Regular.woff");?>');
     }
 
     #wpwrap{
-        background: url('<?php echo WCP_FOLDER_URL;?>assets/images/update-bg.jpg');
+        background: url('<?php echo esc_url(WCP_FOLDER_URL."assets/images/update-bg.jpg") ?>');
         background-position: bottom center;
         background-size: cover;
     }
@@ -263,7 +264,7 @@ if (defined('ABSPATH') === false) {
                 data: {
                     action: "folder_update_status",
                     status: updateStatus,
-                    nonce: '<?php echo wp_create_nonce("folder_update_status") ?>',
+                    nonce: '<?php echo esc_attr(wp_create_nonce("folder_update_status")) ?>',
                     email: jQuery("#folder_update_status").val()
                 },
                 type: 'post',
