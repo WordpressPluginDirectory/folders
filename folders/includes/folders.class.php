@@ -995,7 +995,11 @@ class WCP_Folders
         }
 
         if($isForFolders) {
-            global $wpdb;
+            global $wpdb, $polylang;
+
+            // Check if Polylang is active or not.
+            $polylang_is_active = function_exists("pll_get_post_translations") && function_exists("pll_is_translated_post_type");
+            
             if (!is_array($terms) && count($terms) < 1) {
                 return $terms;
             }
@@ -1038,7 +1042,7 @@ class WCP_Folders
                         );
                         $trash_count = apply_filters("premio_folder_item_in_taxonomy", $term->term_id, $arg);
                     } else {
-                        if ($trash_count == null && isset($trash_folders[$term->term_taxonomy_id])) {
+                        if ($trash_count == null && isset($trash_folders[$term->term_taxonomy_id]) && !$polylang_is_active) {
                             $trash_count = $trash_folders[$term->term_taxonomy_id];
                         } else if ($trash_count == null) {
 
@@ -2186,6 +2190,11 @@ class WCP_Folders
             );
             // Free/Pro URL Change
             wp_enqueue_style('folders-media', WCP_FOLDER_URL.'assets/css/media.min.css', [], WCP_FOLDER_VERSION);
+
+            // Media Progress Style
+            wp_enqueue_style('folders-media-progress', WCP_FOLDER_URL .'assets/css/progress.css', array(), WCP_FOLDER_VERSION);
+
+
         } else if (!self::is_active_for_screen() && self::is_for_this_post_type('attachment')) {
 
             $status = apply_filters("check_media_status_for_folders", true);
@@ -2433,7 +2442,7 @@ class WCP_Folders
             ]
         );
         $hierarchical_terms = [];
-        if (!empty($terms)) {
+        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
             foreach ($terms as $term) {
                 if (!empty($term) && isset($term->term_id)) {
                     $term->term_name      = $term->name;
@@ -2474,7 +2483,7 @@ class WCP_Folders
                 ],
             ]
         );
-        if (!empty($terms)) {
+        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
             foreach ($terms as $term) {
                 if (isset($term->name)) {
                     $term->name           = $separator." ".$term->name;
@@ -2730,7 +2739,7 @@ class WCP_Folders
             $response['errors']  = [];
             $response['message'] = "";
             $errorArray          = [];
-            $errorMessage        = esc_html__("%\$s is required", 'folders');
+            $errorMessage        =  esc_html__("%1\$s is required", 'folders');
             $postData            = filter_input_array(INPUT_POST);
             if (!isset($postData['textarea_text']) || trim($postData['textarea_text']) == "") {
                 $error        = [
@@ -2743,7 +2752,7 @@ class WCP_Folders
             if (!isset($postData['user_email']) || trim($postData['user_email']) == "") {
                 $error        = [
                     "key"     => "user_email",
-                    "message" => sprintf($errorMessage, __("Email", 'folders')),
+                    "message" => sprintf($errorMessage, esc_attr__("Email", 'folders')),
                 ];
                 $errorArray[] = $error;
             } else if (!filter_var($postData['user_email'], FILTER_VALIDATE_EMAIL)) {
@@ -2755,14 +2764,14 @@ class WCP_Folders
             }
 
             if (empty($errorArray)) {
-                if (!isset($postData['folder_help_nonce']) || trim($postData['folder_help_nonce']) == "") {
+                if (!isset($postData['nonce']) || trim($postData['nonce']) == "") {
                     $error        = [
                         "key"     => "nonce",
                         "message" => esc_html__("Your request is not valid", 'folders'),
                     ];
                     $errorArray[] = $error;
                 } else {
-                    if (!wp_verify_nonce($postData['folder_help_nonce'], 'wcp_folder_help_nonce')) {
+                    if (!wp_verify_nonce($postData['nonce'], 'wcp_folder_help_nonce')) {
                         $error        = [
                             "key"     => "nonce",
                             "message" => esc_html__("Your request is not valid", 'folders'),
@@ -2825,7 +2834,7 @@ class WCP_Folders
                 $response['errors'] = $errorArray;
             }//end if
 
-            echo wp_json_encode($response);
+            wp_send_json($response);
         }//end if
 
     }//end wcp_folder_send_message_to_owner()
@@ -3856,7 +3865,7 @@ class WCP_Folders
             ]
         );
 
-        if (!empty($terms)) {
+        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
             foreach ($terms as $term) {
                 self::remove_folder_child_items($term->term_id, $post_type);
             }
@@ -4571,8 +4580,7 @@ class WCP_Folders
 
                     $foldersArray[] = $folder_item;
                 }//end if
-
-                $folders = $postData['folders'];
+                $folders = (isset($postData['folders']) && is_array($postData['folders'])) ? $postData['folders'] : [];
                 if(is_array($folders) && count($folders) > 0) {
                     foreach($folders as $folder) {
                         $order++;
@@ -4971,7 +4979,7 @@ class WCP_Folders
                         AND ELPM.meta_key = '_elementor_is_screenshot') ";
         }
         if(defined("W3TC")) {
-            $join .= "LEFT JOIN ".$wpdb->postmeta." AS WTCPM
+            $join .= " LEFT JOIN ".$wpdb->postmeta." AS WTCPM
                 ON ( P.ID = WTCPM.post_id
                 AND WTCPM.meta_key = 'w3tc_imageservice_file' )";
         }
@@ -5275,7 +5283,7 @@ class WCP_Folders
                 ]
             );
 
-            if ($terms) {
+            if (!empty($terms) && !is_wp_error($terms)) {
                 foreach ($terms as $term) {
                     if (isset($term->trash_count) && !empty($term->trash_count)) {
                         if ($type == 'attachment') {
@@ -5440,8 +5448,8 @@ class WCP_Folders
         if (empty($show_in_page)) {
             $show_in_page = "hide";
         }
-
-        if ($show_in_page == "show") {
+        
+		if ( $show_in_page == "show" && ! empty( $terms ) && ! is_wp_error( $terms ) ){
             echo '<div class="tree-structure-content '.esc_attr($class).'"><div class="tree-structure" id="list-folder-'.esc_attr($termId).'" data-id="'.esc_attr($termId).'">';
             echo '<ul>';
             foreach ($terms as $term) {
@@ -5899,7 +5907,7 @@ class WCP_Folders
     public function plugin_action_links($links)
     {
         array_unshift($links, '<a href="'.admin_url("admin.php?page=wcp_folders_settings").'" >'.esc_html__('Settings', 'folders').'</a>');
-        $links['need_help'] = '<a target="_blank" href="https://premio.io/help/folders/?utm_source=pluginspage" >'.__('Need help?', 'folders').'</a>';
+        $links['need_help'] = '<a target="_blank" href="https://wordpress.org/support/plugin/folders/" >'.__('Need help?', 'folders').'</a>';
 
         // PRO link for only for FREE
         $links['pro'] = '<a class="wcp-folder-upgrade-button" href="'.$this->getFoldersUpgradeURL().'" >'.__('Upgrade', 'folders').'</a>';
@@ -6097,6 +6105,25 @@ class WCP_Folders
 
     }//end getFoldersUpgradeURL()
 
+    /**
+     * Recommended Plugins URL
+     *
+     * @since  1.0.0
+     * @access public
+     * @return $url
+     */
+    function getFoldersRecommendedPluginsURL()
+    {
+        $customize_folders = get_option("customize_folders");
+        if (isset($customize_folders['show_folder_in_settings']) && $customize_folders['show_folder_in_settings'] == "yes") {
+            return admin_url("options-general.php?page=wcp_folders_settings&setting_page=recommended-folder-plugins");
+        } else {
+            return admin_url("admin.php?page=recommended-folder-plugins");
+        }
+
+    }//end getFoldersRecommendedPluginsURL()
+
+
 
     /**
      * Returns folders settings URL
@@ -6243,6 +6270,15 @@ class WCP_Folders
      */
     public function admin_menu()
     {
+        $getData = filter_input_array(INPUT_GET);
+        if (isset($getData['hide_folder_recommended_plugin']) && isset($getData['nonce'])) {
+            if (current_user_can('manage_options')) {
+                $nonce = $getData['nonce'];
+                if (wp_verify_nonce($nonce, "folder_recommended_plugin")) {
+                    update_option('hide_folder_recommended_plugin', "1");
+                }
+            }
+        }
         $customize_folders = get_option("customize_folders");
         if (isset($customize_folders['show_folder_in_settings']) && $customize_folders['show_folder_in_settings'] == "yes") {
             add_options_page(
@@ -6270,15 +6306,7 @@ class WCP_Folders
             $position   = 99;
             add_menu_page($page_title, $menu_title, $capability, $menu_slug, $callback, $icon_url, $position);
 
-            $getData = filter_input_array(INPUT_GET);
-            if (isset($getData['hide_folder_recommended_plugin']) && isset($getData['nonce'])) {
-                if (current_user_can('manage_options')) {
-                    $nonce = $getData['nonce'];
-                    if (wp_verify_nonce($nonce, "folder_recommended_plugin")) {
-                        update_option('hide_folder_recommended_plugin', "1");
-                    }
-                }
-            }
+           
 
             $recommended_plugin = get_option("hide_folder_recommended_plugin");
             if ($recommended_plugin === false) {
@@ -6407,6 +6435,9 @@ class WCP_Folders
             if($setting_page == "upgrade-to-pro") {
                 $hasBackButton = true;
                 include_once dirname(dirname(__FILE__)) . "/templates/admin/upgrade-to-pro.php";
+            }elseif($setting_page == "recommended-folder-plugins") {
+                $hasBackButton = true;
+                include_once dirname(dirname(__FILE__))."/templates/admin/recommended-plugins.php";
             } else {
                 $options = get_option('folders_settings');
                 $options = (empty($options) || !is_array($options)) ? [] : $options;
@@ -7414,7 +7445,7 @@ class WCP_Folders
                         ],
                     ]
                 );
-                if (!empty($terms)) {
+                if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
                     foreach ($terms as $term) {
                         $order = get_term_meta($term->term_id, "wcp_custom_order", true);
                         if (empty($order) || $order == null) {

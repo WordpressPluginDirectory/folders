@@ -30,7 +30,7 @@ if (! defined('ABSPATH')) {
                         <label></label>
                         <textarea placeholder="<?php esc_html_e("Your comment", 'folders'); ?>" id="folder-comment"></textarea>
                     </div>
-                    <?php esc_html_e("Having any problem with the Folders plugins?", 'folders'); ?><a class='folder-deactivate-button' href='javascript:;'><?php esc_html_e("Click here", 'folders'); ?></a><?php esc_html_e(" to contact our support now", 'folders'); ?>
+                    <?php esc_html_e("Having any problem with the Folders plugins?", 'folders'); ?><a class='folder-deactivate-button' href='#'><?php esc_html_e("Click here", 'folders'); ?></a><?php esc_html_e(" to contact our support now", 'folders'); ?>
                 </div>
                 <div class="folder-popup-footer">
                     <label class="folder-anonymous"><input type="checkbox"/><?php esc_html_e('Anonymous feedback', 'folders'); ?>
@@ -57,9 +57,11 @@ if (! defined('ABSPATH')) {
 
                 $(document).on("click", ".folder-deactivate-button", function(e){
                     e.stopPropagation();
+                    $('.premio-help-button-wrap').show();
                     jQuery(".folder-popup-button-close").trigger("click");
-                    jQuery(".folder-help-btn").toggle();
-                    jQuery(".folder-help-form").toggleClass("active");
+                    jQuery(".contact-us-btn").trigger("click");
+                    jQuery(".premio-help-close-btn").addClass('show');
+                    jQuery(".premio-help-button").addClass('hide');
                     jQuery("#user_email").focus();
                 });
 
@@ -131,5 +133,4 @@ if (! defined('ABSPATH')) {
             });
 
         })(jQuery); // This invokes the function above and allows us to use '$' in place of 'jQuery' in our code.
-    </script>
-<?php require_once dirname(__FILE__)."/help.php";
+    </script> 

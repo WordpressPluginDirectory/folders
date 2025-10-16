@@ -54,7 +54,7 @@ if (! defined('ABSPATH')) {
                         e.preventDefault();
                         $(this).find("option:selected[value='folders-pro']").prop("selected", false);
                         $(this).trigger("change");
-                        window.open("<?php echo esc_url($this->getFoldersUpgradeURL()) ?>", "_blank");
+                        window.open(<?php echo json_encode($this->getFoldersUpgradeURL()); ?>, "_blank");
                     }
                     $(this).find("option:selected").each(function () {
                         $("#folders-for-" + $(this).attr("value")).removeClass("hide-option");
@@ -63,7 +63,7 @@ if (! defined('ABSPATH')) {
                 $(".folder-post-select").on("change", function () {
                     if ($(this).val() == "folders-pro") {
                         $(this).val("").trigger("change");
-                        window.open("<?php echo esc_url($this->getFoldersUpgradeURL()) ?>", "_blank");
+                        window.open(<?php echo json_encode($this->getFoldersUpgradeURL()); ?>, "_blank");
                     }
                 });
             <?php } ?>
@@ -97,26 +97,30 @@ if (! defined('ABSPATH')) {
             $("#save-settings").on("click", function(){
                 $("#setting-form #submit").trigger("click");
             });
-            const form = document.getElementById('setting-form');
-            let isFormDirty = false;
-            const formOldValues = $('#setting-form').serialize();
 
-            $(document).on("change", "#setting-form", function () {
-                isFormDirty = formOldValues !== $('#setting-form').serialize()
-            });
+            <?php if ($setting_page == "folder-settings" || $setting_page == "customize-folders") { ?>
+                const form = document.getElementById('setting-form');
+                let isFormDirty = false;
+                const formOldValues = $('#setting-form').serialize();
 
-            window.addEventListener('beforeunload', (event) => {
-                if (isFormDirty) {
-                    const confirmationMessage = 'You have unsaved changes. Are you sure you want to leave this page?';
-                    event.returnValue = confirmationMessage;
-                    return confirmationMessage;
-                }
-            });
+                $(document).on("change", "#setting-form", function () {
+                    isFormDirty = formOldValues !== $('#setting-form').serialize()
+                });
 
-            // Reset isFormDirty on form submit
-            form.addEventListener('submit', () => {
-                isFormDirty = false;
-            });
+                window.addEventListener('beforeunload', (event) => {
+                    if (isFormDirty) {
+                        const confirmationMessage = 'You have unsaved changes. Are you sure you want to leave this page?';
+                        event.returnValue = confirmationMessage;
+                        return confirmationMessage;
+                    }
+                });
+
+                // Reset isFormDirty on form submit
+                form.addEventListener('submit', () => {
+                    isFormDirty = false;
+                });
+            <?php } ?>
+
             $(document).on("click",".import-folders-button", function(e){
                 $("#import-folders-popup").show();
             });
@@ -144,13 +148,13 @@ if (! defined('ABSPATH')) {
                 if($(this).val() == "folders-pro") {
                     $(this).find("option").prop("selected", false);
                     $(this).find("option:first").prop("selected", true);
-                    window.open("<?php echo esc_url($this->getFoldersUpgradeURL()) ?>", "_blank");
+                    window.open(<?php echo json_encode($this->getFoldersUpgradeURL()); ?>, "_blank");
                 }
             });
             $(document).on("change", "#folder_font", function(){
                 if($(this).val() == "folders-pro") {
                     $(this).val("").trigger("change");
-                    window.open("<?php echo esc_url($this->getFoldersUpgradeURL()) ?>", "_blank");
+                    window.open(<?php echo json_encode($this->getFoldersUpgradeURL()); ?>, "_blank");
                 }
             });
             $(document).on("click",".view-shortcodes", function(e){
@@ -160,7 +164,7 @@ if (! defined('ABSPATH')) {
             $(document).on("change", "#folder_size", function(){
                 if($(this).val() == "folders-pro" || $(this).val() == "folders-pro-item" || $(this).val() == "folders-item-pro") {
                     $(this).val("16").trigger("change");
-                    window.open("<?php echo esc_url($this->getFoldersUpgradeURL()) ?>", "_blank");
+                    window.open(<?php echo json_encode($this->getFoldersUpgradeURL()); ?>, "_blank");
                 }
             });
             $(".accordion-header:first").trigger("click");
@@ -685,13 +689,13 @@ if ($wp_status == "yes") {
     <div class="popup-form-content">
         <div class="folder-modal-content">
             <div class="close-popup-button">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="import-folder-title"></div>
             <div class="import-folder-note">Are you sure you'd like to import $x folders from $plugin?</div>
             <div class="folder-form-buttons">
                 <button type="submit" class="form-submit-btn" id="import-folder-button"><?php esc_html_e("Import", 'folders'); ?></button>
-                <a href="javascript:;" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
+                <a href="#" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
             </div>
         </div>
     </div>
@@ -703,7 +707,7 @@ if ($wp_status == "yes") {
     <div class="popup-form-content">
         <div class="folder-modal-content">
             <div class="close-popup-button">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="import-plugin-title"><?php esc_html_e("Import data", 'folders'); ?></div>
             <div class="plugin-import-table">
@@ -728,7 +732,7 @@ if ($wp_status == "yes") {
             </div>
             <div class="folder-form-buttons">
                 <div class=""></div>
-                <a href="javascript:;" class="form-cancel-btn"><?php esc_html_e("Close", 'folders'); ?></a>
+                <a href="#" class="form-cancel-btn"><?php esc_html_e("Close", 'folders'); ?></a>
             </div>
         </div>
     </div>
@@ -740,13 +744,13 @@ if ($wp_status == "yes") {
     <div class="popup-form-content">
         <div class="folder-modal-content">
             <div class="close-popup-button">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="remove-folder-title"><?php esc_html_e("Are you sure?", 'folders'); ?></div>
             <div class="remove-folder-note"></div>
             <div class="folder-form-buttons">
                 <button type="submit" class="form-submit-btn delete-folder-plugin" id="remove-folder-button"><?php esc_html_e("Delete plugin data", 'folders'); ?></button>
-                <a href="javascript:;" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
+                <a href="#" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
             </div>
         </div>
     </div>
@@ -756,12 +760,12 @@ if ($wp_status == "yes") {
     <div class="popup-form-content">
         <div class="folder-modal-content">
             <div class="close-popup-button close-remove-folders">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="remove-folder-title"><?php esc_html_e("Are you sure?", 'folders'); ?></div>
             <div class="remove-folder-note"><?php printf(esc_html__("Folders will remove all created folders once you remove the plugin. We recommend you %1\$snot to use this feature%2\$s if you plan to use Folders in future.", 'folders'), "<b>", "</b>"); ?></div>
             <div class="folder-form-buttons">
-                <a href="javascript:;" class="form-cancel-btn cancel-folders"><?php esc_html_e("Cancel", 'folders'); ?></a>
+                <a href="#" class="form-cancel-btn cancel-folders"><?php esc_html_e("Cancel", 'folders'); ?></a>
                 <button type="submit" class="form-cancel-btn delete-button"><?php esc_html_e("I want to delete anyway", 'folders'); ?></button>
             </div>
         </div>
@@ -773,7 +777,7 @@ if ($wp_status == "yes") {
         <div class="folder-modal-content">
             <form id="remove_folders_data" autocomplete="off" >
                 <div class="close-popup-button">
-                    <a class="" href="javascript:;"><span></span></a>
+                    <a class="" href="#"><span></span></a>
                 </div>
                 <div class="remove-folder-title"></div>
                 <div class="remove-folder-note text-left">
@@ -787,7 +791,7 @@ if ($wp_status == "yes") {
                     <input type="hidden" name="nonce" id="remove-folder-nonce" value="<?php echo esc_attr(wp_create_nonce("remove_folders_data")) ?>">
                     <input type="hidden" name="action" value="remove_all_folders_data">
                     <button disabled type="submit" class="form-submit-btn delete-button" id="remove-folders-data-button"><?php esc_html_e("Delete", 'folders'); ?></button>
-                    <a href="javascript:;" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
+                    <a href="#" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
                 </div>
             </form>
         </div>
@@ -803,7 +807,7 @@ if ($wp_status == "yes" && $show_media_popup) {
             <div class="folder-modal-content">
                 <div class="popup-form-data">
                     <div class="close-popup-button">
-                        <a class="" href="javascript:;"><span></span></a>
+                        <a class="" href="#"><span></span></a>
                     </div>
                     <div class="popup-folder-title">
                         <?php esc_html_e("Seems you’re using WordPress.com", "folders") ?>
@@ -828,7 +832,7 @@ if (($option == "show" || get_option("folder_redirect_status") == 2) && $is_plug
         <div class="popup-form-content">
             <div class="folder-modal-content">
                 <div class="close-popup-button">
-                    <a class="" href="javascript:;"><span></span></a>
+                    <a class="" href="#"><span></span></a>
                 </div>
                 <div class="import-plugin-title"><?php esc_html_e("Import data", 'folders'); ?></div>
                 <div class="import-plugin-note"><?php esc_html_e("We've detected that you use another folders plugin. Would you like the Folders plugin to import your current folders? Keep in mind you can always do it in Folders Settings -> Import", 'folders'); ?></div>
@@ -853,7 +857,7 @@ if (($option == "show" || get_option("folder_redirect_status") == 2) && $is_plug
                 </div>
                 <div class="folder-form-buttons">
                     <div class=""></div>
-                    <a href="javascript:;" id="cancel-plugin-import" class="form-cancel-btn"><?php esc_html_e("Close", 'folders'); ?></a>
+                    <a href="#" id="cancel-plugin-import" class="form-cancel-btn"><?php esc_html_e("Close", 'folders'); ?></a>
                 </div>
             </div>
         </div>
@@ -869,7 +873,7 @@ if (($option == "show" || get_option("folder_redirect_status") == 2) && $is_plug
     <div class="popup-form-content">
         <div class="folder-modal-content">
             <div class="close-popup-button">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="add-update-folder-title" id="folder-limitation-message">
                 <?php esc_html_e("You've reached the 10 folder limitation!", 'folders'); ?>
@@ -878,19 +882,18 @@ if (($option == "show" || get_option("folder_redirect_status") == 2) && $is_plug
                 <?php esc_html_e("Unlock unlimited amount of folders by upgrading to one of our pro plans.", 'folders'); ?>
             </div>
             <div class="folder-form-buttons">
-                <a href="javascript:;" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
+                <a href="#" class="form-cancel-btn"><?php esc_html_e("Cancel", 'folders'); ?></a>
                 <a href="<?php echo esc_url($this->getFoldersUpgradeURL()) ?>" target="_blank" class="form-submit-btn"><?php esc_html_e("See Pro Plans", 'folders'); ?></a>
             </div>
         </div>
     </div>
-</div>
-<?php require_once "help.php" ?>
+</div> 
 
 <div class="folder-popup-form" id="keyboard-shortcut">
     <div class="popup-form-content" style="padding: 20px 0 0;">
         <div class="folder-modal-content">
             <div class="close-popup-button" style="padding: 0 20px;">
-                <a class="" href="javascript:;"><span></span></a>
+                <a class="" href="#"><span></span></a>
             </div>
             <div class="import-plugin-title"><?php esc_html_e("Keyboard shortcuts (Ctrl+K)", 'folders'); ?></div>
             <div class="plugin-import-table" style="padding: 0 20px 10px; max-height: calc(100vh - 160px); overflow-y: auto;">

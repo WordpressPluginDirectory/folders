@@ -3,17 +3,17 @@ Contributors: galdub, tomeraharon, premio
 Tags: folder, folders, replace media, pages folders, media library
 Requires at least: 3.0.0
 Tested up to: 6.8
-Stable tag: 3.1.1
+Stable tag: 3.1.5
 Plugin URI: https://premio.io/downloads/folders/
 License: GPLv3
 
-🔥 With the Folders WordPress plugin create unlimited folders, organize & manage your Media Library files, Pages & Posts in folders 📁
+Create unlimited folders with the Folders WordPress plugin, organize & manage your Media Library files, Pages & Posts in folders 📁
 
 == Description ==
 
 <a href="https://premio.io/help/folders/?utm_source=wordpressorg" target="_blank" title="Support">Support</a> | <a href="https://demo.premio.io/folders/?utm_source=wordpressorg" target="_blank" title="Premio.io demo site">Demo</a> | <a href="https://premio.io/?utm_source=wordpressorg" target="_blank" title="WordPress plugins">Recommended Plugins</a> | <a href="https://premio.io/downloads/folders/?utm_source=wordpressorg" target="_blank" title="Folders Pro"><strong>Upgrade to Pro ⭐</strong></a>
 
-Create <strong>Unlimited Folders</strong> In The Free Version 🎉
+= Create <strong>Unlimited Folders</strong> with The Free Folders Plugin Version 🎉 =
 
 Folders is a WordPress plugin that enables users to organize all of their Pages, Posts, and Media files in folders. Easily drag and drop items into directories and change the folders tree view (hierarchy). Check out <a href="https://premio.io/downloads/folders" target="_blank" title="Folders pro plans"><strong>Folders Pro Plans</strong></a>.
 
@@ -78,7 +78,7 @@ Upload text, images, videos, and audio. Then organize everything you upload into
 * Folders' icon colors
 * Download any media library folder as a ZIP: download any media library folder as a zip file
 * Sticky folders - pin your folders to the upper part of the folders navigation area. Use the sticky folders feature to make your most important folders accessible
-* Star directories
+* Star directories - keep your most important folders more visible
 * Upload folders from your PC - upload your computer folders, and all its structure (including subfolders) will be recreated on your WordPress website
 * Folders user access management - advanced folders access management for your team with roles that restrict their access to view and edit your website’s folders
 * Lock folders - locked folders stay pinned, and cannot be dragged or deleted (lock all folders/unlock all folders too)
@@ -104,9 +104,9 @@ With the Pro version, when you use the folders plugin on WordPress, our plugin i
 With dynamic folders, Sort out all your posts by date, authors, categories and more! Folders seamlessly integrates with the WordPress interface to intelligently create folders containing your content. 
 We also have a native integration with WooCommerce. Manage your dynamic folders automatically using Folders with WooCommerce.
 
-This is a great way to manage all your stuff into different folders right after you start using folders. 
+This is a great way to manage and organize folders when you start using the Folders plugin. 
 
-= 🔁 Replace media files =
+= 🔁 Replace media library files =
 With the Folders plugin, replace media library files with other files. Save time whenever you need to replace a media file on all of your pages, posts, etc. When you replace a media file, the change will reflect on all of your pages, posts, and more. 
 
 With the replace media files feature, users can select the file they want to replace, choose whether to "just replace the file" or "replace the file and use the new file name and update all relevant links", and select any desired date options. The changes are automatically applied to all instances of the file on the user's website, so they don't have to waste time manually replacing each instance of the file.
@@ -153,7 +153,7 @@ Wondering how you can use these pages, posts, and media library folders plugin f
 = 🔒 GDPR AND PRIVACY =
 Folders plugin is GDPR compliant, all data is saved locally on your server.
 
-Folders is compatible with Gutenberg, Elementor website builder, Divi, Visual Composer, WPbakery, Beaver Builder, and any WordPress theme. 
+Folders is compatible with Gutenberg, Elementor website builder, Divi, Visual Composer, WPBakery, Beaver Builder, and any WordPress theme. 
 
 Download this plugin today for free and get unlimited folders to organize your WP content. Then unlock unlimited folders with the Pro Plan for max organization! 
 
@@ -225,6 +225,27 @@ Just follow our <a href="https://premio.io/wordpress-premio-pro-version-installa
 A live demo for the Folders plugin is available at <a href="https://demo.premio.io/folders/?utm_source=wordpressorg" target="_blank" title="Premio.io demo site">Premio's demo site</a>.
 
 == Changelog ==
+
+= 3.1.5 =
+Fixed the following bugs:
+Compatibility issue with the W3 Total Cache plugin
+WebP files can now be replaced correctly
+
+= 3.1.4 =
+Added a download button on media items.
+Improved file upload UI - now includes progress display while uploading.
+Enhanced replace media behavior - when replacing a file, the title now updates alongside the filename.
+Mobile usability - the plugin is now scrollable and easier to use on mobile devices.
+Polylang compatibility - folder count now refreshes correctly when "All languages" is selected.
+Tutor LMS conflict - fixed compatibility issue with the Tutor LMS Certificate Builder.
+WordPress plugins page - resolved UI issues affecting the Folders interface in the plugins page.
+Error logs - fixed Folders-related errors appearing in server logs.
+
+= 3.1.3 =
+WordPress playground folders creation bug fixed
+
+= 3.1.2 =
+Improved support flow
 
 = 3.1.1 =
 Folders WordPress menu bug fixed
